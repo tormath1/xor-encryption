@@ -67,3 +67,56 @@ println:
 	pop	rcx
 
 	ret
+
+; rand generate a pseudo-random number based
+; on the `square` CBRNG
+; https://arxiv.org/pdf/2004.06278v2.pdf
+; int64 rand()
+rand:
+	; save registry
+	push	r8
+	push	r9
+	push 	r10
+	push	rdi
+
+	mov	r10, rcx	; copy of rcx
+	push	rcx		; save rcx destroyed by syscall
+
+	; generate seed from time
+	mov	rax, 201	; sys_time
+	xor	rdi, rdi	; set rdi to 0 to return value in rax
+	syscall
+
+	mov	r8, rax 	; set the seed based on the time
+	mov	rax, r10	; set the counter
+	inc	rax	; add 1 to avoid 0
+	mul	r8			; counter * seed
+	mov	r9, rax		; y = counter * seed
+	add	r8, r9		; z = y + key
+	; 1st round
+	mul	rax		; x = x * x
+	add	rax, r9		; x = x + y
+	mov	r10, rax	; copy rax
+	shr	rax, 32		; x >> 32
+	shl	r10, 32		; x << 32
+	or	rax, r10	; (x >> 32) | (x << 32)
+	; 2nd round
+	mul	rax		; x = x * x
+	add 	rax, r8		; x = x + z
+	mov	r10, rax	; copy rax
+	shr	rax, 32		; x >> 32
+	shl	r10, 32		; x << 32
+	or	rax, r10	; (x >> 32) | (x << 32)
+	; 3rd round
+	mul	rax		; x = x * x
+	add 	rax, r9		; x = x + y
+	shr	rax, 32		; x >> 32
+
+	; restore saved value
+	pop	rcx
+	pop	rdi
+	pop 	r10
+	pop	r9
+	pop	r8
+
+	ret
