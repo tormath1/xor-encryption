@@ -19,4 +19,4 @@ $ ./a.out | od -A x -t x1z -v
 
 - [ ] add decryption
 - [ ] use stdin to get the plain text
-- [ ] remove `/dev/urandom` dependency to work on uc
+- [x] remove `/dev/urandom` dependency to work on uc
