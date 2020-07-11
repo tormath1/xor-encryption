@@ -22,21 +22,13 @@ _start:
 	xor	r10, r10	; init r10
 
 	; generate mask
-
-	mov	rdi, urandom	; file to open
-	mov	rsi, 0x00	; O_RDONLY
-	mov	rdx, 0x01	; FREAD
-	mov	rax, 0x02	; sys_open
-	syscall
-
-	mov	rdi, rax	; use the file descriptor
-	mov	rsi, mask	; store the content of the file in mask
-	mov	rdx, 5		; number of bytes (character) to read
-	mov	rax, 0		; sys_read
-	syscall
-
-	mov	rax, 3	; sys_close
-	syscall	
+	xor	rcx, rcx	; set counter to 0
+.generate:
+	call	rand
+	mov	[mask + rcx], al; fill the mask
+	inc	rcx
+	cmp	rcx, 0x05	; compare counter to 5 (string length)
+	jnz	.generate	; loop if not equal
 
 	mov	rax, mask	; prepare the mask to be displayed
 	call 	println		; print the mask

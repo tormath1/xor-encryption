@@ -96,17 +96,11 @@ rand:
 	; 1st round
 	mul	rax		; x = x * x
 	add	rax, r9		; x = x + y
-	mov	r10, rax	; copy rax
-	shr	rax, 32		; x >> 32
-	shl	r10, 32		; x << 32
-	or	rax, r10	; (x >> 32) | (x << 32)
+	ror	rax, 32		; x >> 32 | x << 32
 	; 2nd round
 	mul	rax		; x = x * x
 	add 	rax, r8		; x = x + z
-	mov	r10, rax	; copy rax
-	shr	rax, 32		; x >> 32
-	shl	r10, 32		; x << 32
-	or	rax, r10	; (x >> 32) | (x << 32)
+	ror	rax, 32		; x >> 32 | x << 32
 	; 3rd round
 	mul	rax		; x = x * x
 	add 	rax, r9		; x = x + y
