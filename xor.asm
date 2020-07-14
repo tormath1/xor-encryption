@@ -2,7 +2,6 @@
 
 SECTION .data
 
-urandom	db '/dev/urandom', 0h	; /dev/urandom for pseudo random
 clear	db 'hello', 0h		; clear text to cipher
 
 SECTION .bss
